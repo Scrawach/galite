@@ -1,0 +1,21 @@
+class_name GAUserEvent
+extends GAEvent
+
+var elapsed_seconds
+
+func serialize() -> Dictionary:
+	if elapsed_seconds:
+		return {
+			"category": "session_end",
+			"length": elapsed_seconds
+		}
+	
+	return {
+		"category": "user"
+	}
+
+static func session_start() -> GAUserEvent:
+	return GAUserEvent.new()
+
+static func session_end(elapsed_seconds: int) -> GAUserEvent:
+	return GAUserEvent.new()

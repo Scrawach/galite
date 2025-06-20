@@ -7,6 +7,8 @@ func _ready() -> void:
 	#GALite.secret_key = "[SECRET_KEY]"
 	
 	await GALite.request_init()
+	await GALite.request(GAUserEvent.session_start())
 	await GALite.request(GAProgressionEvent.start("World03"))
 	await GALite.request(GAProgressionEvent.fail("World03").with_attempt_number(5))
 	await GALite.request(GAProgressionEvent.complete("World03").with_score(42))
+	await GALite.request(GAUserEvent.session_end(5))
