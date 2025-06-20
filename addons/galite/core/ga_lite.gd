@@ -41,13 +41,11 @@ func request_init() -> int:
 	var init_payload_json: String = JSON.stringify(init_payload)
 	return await _request(_make_url("init"), init_payload_json)
 
-func request_event(event_name: String, content: Dictionary) -> int:
-	return OK
-
-func progression_request(status: GAProgression, progression: String) -> int:
-	var fields: Array = [get_progression_event_fields(status, progression)]
-	var fields_json: String = JSON.stringify(fields)
-	return await _request(_make_url("events"), fields_json)
+func request(event: GAEvent) -> int:
+	var serialized: Dictionary = event.serialize()
+	serialized.merge(shared_annotations.duplicate())
+	var json: String = JSON.stringify([serialized])
+	return await _request(_make_url("events"), json)
 
 func _make_url(endpoint: String) -> String:
 	return base_url + game_key + "/" + endpoint
@@ -68,23 +66,6 @@ func hmac_auth_hash(body: String, secret: String) -> String:
 	hmac.start(HashingContext.HASH_SHA256, secret.to_utf8_buffer())
 	hmac.update(body.to_utf8_buffer())
 	return Marshalls.raw_to_base64(hmac.finish())
-
-func get_progression_event_fields(status: GAProgression, progression: String) -> Dictionary:
-	var status_result: String = "Start"
-	match status:
-		GAProgression.Start:
-			status_result = "Start"
-		GAProgression.Complete:
-			status_result = "Complete"
-		GAProgression.Fail:
-			status_result = "Fail"
-	
-	var base := shared_annotations.duplicate()
-	base.merge({
-		"category": "progression",
-		"event_id": "%s:%s" % [status_result, progression]
-	})
-	return base
 
 func _debug(content: String) -> void:
 	print(content)
