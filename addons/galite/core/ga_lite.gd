@@ -6,12 +6,6 @@ var base_url: String = "https://sandbox-api.gameanalytics.com/v2/"
 var game_key: String = "5c6bcb5402204249437fb5a7a80a4959"
 var secret_key: String = "16813a12f718bc5c620f56944e1abc3ea13ccbac"
 
-enum GAProgression {
-	Start = 0,
-	Complete = 1,
-	Fail = 2
-}
-
 var shared_annotations: Dictionary
 
 func _ready() -> void:
@@ -34,9 +28,9 @@ func _ready() -> void:
 
 func request_init() -> int:
 	var init_payload: Dictionary = {
-		platform = "ios",
-		os_version = "ios 8.1",
-		sdk_version = "rest api v2"
+		platform = shared_annotations["platform"],
+		os_version = shared_annotations["os_version"],
+		sdk_version = shared_annotations["sdk_version"]
 	}
 	var init_payload_json: String = JSON.stringify(init_payload)
 	return await _request(_make_url("init"), init_payload_json)
