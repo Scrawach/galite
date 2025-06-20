@@ -18,4 +18,6 @@ static func session_start() -> GAUserEvent:
 	return GAUserEvent.new()
 
 static func session_end(elapsed_seconds: int) -> GAUserEvent:
-	return GAUserEvent.new()
+	var event = GAUserEvent.new()
+	event.elapsed_seconds = elapsed_seconds
+	return event
