@@ -18,11 +18,20 @@ func request_init() -> int:
 	}
 	var init_payload_json: String = JSON.stringify(init_payload)
 	var response = await _request(url_init, init_payload_json)
+	
+	if response[1] == HTTPClient.RESPONSE_OK:
+		var response_body: PackedByteArray = response[3]
+		var server_ts: int = JSON.parse_string(response_body.get_string_from_ascii())["server_ts"]
+		print("%s, %s" % [server_ts, Time.get_unix_time_from_system()])
+		
+		
 	return response[0]
 
 func request(event: GAEvent) -> int:
 	var serialized: Dictionary = event.serialize()
+	properties.client_ts = int(Time.get_unix_time_from_system())
 	serialized.merge(properties.serialize())
+	
 	var json: String = JSON.stringify([serialized])
 	var response = await _request(url_events, json)
 	return response[0]
