@@ -10,29 +10,29 @@ func initialize(properties: GAProperties) -> void:
 	self.url_init = _make_url("init")
 	self.url_events = _make_url("events")
 
-func request_init() -> int:
+func request_init_async() -> int:
 	var init_payload: Dictionary = {
 		platform = properties.platform,
 		os_version = properties.os_version,
 		sdk_version = properties.sdk_version
 	}
 	var init_payload_json: String = JSON.stringify(init_payload)
-	var response = await _request(url_init, init_payload_json)
+	var response = await _request_async(url_init, init_payload_json)
 	return response[0]
 
-func request(event: GAEvent) -> int:
+func request_async(event: GAEvent) -> int:
 	var serialized: Dictionary = event.serialize()
 	properties.client_ts = int(Time.get_unix_time_from_system())
 	serialized.merge(properties.serialize())
 	
 	var json: String = JSON.stringify([serialized])
-	var response = await _request(url_events, json)
+	var response = await _request_async(url_events, json)
 	return response[0]
 
 func _make_url(endpoint: String) -> String:
 	return properties.base_url + properties.game_key + "/" + endpoint
 
-func _request(endpoint: String, content: String) -> Array:
+func _request_async(endpoint: String, content: String) -> Array:
 	var request = HTTPRequest.new()
 	add_child(request)
 	var error: int = request.request(endpoint, _make_headers(content), HTTPClient.METHOD_POST, content)
