@@ -10,36 +10,37 @@ func initialize(properties: GAProperties) -> void:
 	self.url_init = _make_url("init")
 	self.url_events = _make_url("events")
 
-func request_init_async() -> int:
-	var init_payload: Dictionary = {
+func request_init_async() -> GAHTTPResponse:
+	return await _request_async(url_init, _make_init_request())
+
+func request_async(event: GAEvent) -> GAHTTPResponse:
+	properties.client_ts = int(Time.get_unix_time_from_system())
+	return await _request_async(url_events, _serialize_event(event))
+
+func _make_init_request() -> String:
+	return JSON.stringify({
 		platform = properties.platform,
 		os_version = properties.os_version,
 		sdk_version = properties.sdk_version
-	}
-	var init_payload_json: String = JSON.stringify(init_payload)
-	var response = await _request_async(url_init, init_payload_json)
-	return response[0]
+	})
 
-func request_async(event: GAEvent) -> int:
-	var serialized: Dictionary = event.serialize()
-	properties.client_ts = int(Time.get_unix_time_from_system())
-	serialized.merge(properties.serialize())
-	
-	var json: String = JSON.stringify([serialized])
-	var response = await _request_async(url_events, json)
-	return response[0]
+func _serialize_event(event: GAEvent) -> String:
+	var serialized_event: Dictionary = event.serialize()
+	serialized_event.merge(properties.serialize())
+	return JSON.stringify([serialized_event])
 
 func _make_url(endpoint: String) -> String:
 	return properties.base_url + properties.game_key + "/" + endpoint
 
-func _request_async(endpoint: String, content: String) -> Array:
+func _request_async(endpoint: String, content: String) -> GAHTTPResponse:
 	var request = HTTPRequest.new()
 	add_child(request)
 	var error: int = request.request(endpoint, _make_headers(content), HTTPClient.METHOD_POST, content)
 	var response = await request.request_completed
-	_debug("Received: %s, %s, %s, %s" % [response[0], response[1], response[2], response[3].get_string_from_ascii()])
+	var ga_response := GAHTTPResponse.new(response[0], response[1], response[2], response[3].get_string_from_ascii())
+	_debug("Received: %s" % ga_response)
 	request.queue_free()
-	return response
+	return ga_response
 
 func _make_headers(content: String) -> PackedStringArray:
 	var hmac_hash: String = hmac_auth_hash(content, properties.secret_key)
