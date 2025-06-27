@@ -18,6 +18,10 @@ func request_async(event: GAEvent) -> GALiteHTTPResponse:
 	properties.client_ts = int(Time.get_unix_time_from_system())
 	return await _request_async(url_events, _serialize_event(event))
 
+func request_group_async(events: Array) -> GALiteHTTPResponse:
+	properties.client_ts = int(Time.get_unix_time_from_system())
+	return await _request_async(url_events, _serialize_group_of_events(events))
+
 func _make_init_request() -> String:
 	return JSON.stringify({
 		platform = properties.platform,
@@ -29,6 +33,16 @@ func _serialize_event(event: GAEvent) -> String:
 	var serialized_event: Dictionary = event.serialize(properties)
 	serialized_event.merge(properties.serialize())
 	return JSON.stringify([serialized_event])
+
+func _serialize_group_of_events(events: Array) -> String:
+	var group_request: Array
+	var serialized_properties: Dictionary = properties.serialize()
+	for event in events:
+		var ga_event: GAEvent = event as GAEvent
+		var serialized_event: Dictionary = ga_event.serialize(properties)
+		serialized_event.merge(serialized_properties)
+		group_request.append(serialized_event)
+	return JSON.stringify(group_request)
 
 func _make_url(endpoint: String) -> String:
 	return properties.base_url + properties.game_key + "/" + endpoint
