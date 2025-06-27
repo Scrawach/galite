@@ -21,7 +21,7 @@ func serialize(properties: GALiteProperties) -> Dictionary:
 		"event_id": event_id,
 		"amount": amount,
 		"currency": currency,
-		"transaction_num": properties.transaction_num
+		"transaction_num": properties.business_transaction_num
 	}
 	
 	if cart_type:
