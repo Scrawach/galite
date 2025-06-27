@@ -8,25 +8,48 @@ Lightweight addon for working with GameAnalytics via REST API written in GDScrip
 ## Getting Started
 
 ```gdscript
-var properties := GAProperties.make_default("[GAME_KEY]", "[SECRET_KEY]")
+var properties := GALiteProperties.make_default("[GAME_KEY]", "[SECRET_KEY]")
+# Generate unique user id or load from saves, it's should be stored in local db
+properties.user_id = "test-user-0"
+# Generate unique session id
+properties.session_id = "de305d54-75b4-431b-adb2-eb6b9e546014"
+# Generate and stored in local db session number
+properties.session_num = 1
+# Generate and stored in local db business transaction number		     
+properties.business_transaction_num = 1
+
 GALite.initialize(properties)
 
-await GALite.request_init()
-await GALite.request(GAUserEvent.session_start())
-await GALite.request(GAProgressionEvent.start("World05"))
-await GALite.request(GAProgressionEvent.fail("World05").with_score(42))
-await GALite.request(GAProgressionEvent.complete("World05").with_attempt_number(3))
-await GALite.request(GAUserEvent.session_end(5))
-```
+await GALite.request_init_async()
+await GALite.request_async(GAUserEvent.session_start())
 
-## Events
+# business events:
+await GALite.request_async(GABusinessEvent.new("BlueGemsPack:CustomGem0", 50, "USD"))
+await GALite.request_async(GABusinessEvent.new("BlueGemsPack:CustomGem0", 10, "USD").purchased_from("event_example"))
+await GALite.request_async(GABusinessEvent.new("BlueGemsPack:CustomGem1", 50, "USD").with_receipt("google_play", "[RECEIPT]", "[SIGNATURE]"))
 
-### Progression Events Example
+# resource events:
+await GALite.request_async(GAResourceEvent.sink("gold", "boost", "rainbowBoost", 10))
+await GALite.request_async(GAResourceEvent.source("gold", "mine", "mineBoost", 15))
 
-```gdscript
-await GALite.request(GAProgressionEvent.start("Level01"))
+# progression events:
+await GALite.request_async(GAProgressionEvent.start("World05"))
+await GALite.request_async(GAProgressionEvent.fail("World05").with_score(42))
+await GALite.request_async(GAProgressionEvent.complete("World05").with_attempt_number(3))
 
-await GALite.request(GAProgressionEvent.fail("Level01").with_score(42))
+# design events:
+await GALite.request_async(GADesignEvent.new("GamePlay:kill:goblin"))
+await GALite.request_async(GADesignEvent.new("GamePlay:heal:goblin"))
+await GALite.request_async(GADesignEvent.new("GamePlay:kill:orc"))
 
-await GALite.request(GAProgressionEvent.complete("Level01").with_attempt_number(4))
+# error events:
+await GALite.request_async(GAErrorEvent.debug("test debug message"))
+await GALite.request_async(GAErrorEvent.info("test info message"))
+await GALite.request_async(GAErrorEvent.warning("test warning message"))
+await GALite.request_async(GAErrorEvent.error("test error message"))
+await GALite.request_async(GAErrorEvent.critical("test critical message"))
+
+await GALite.request_async(GAUserEvent.session_end(5))
+
+# save user_id, session_num and business_transaction_num in local db
 ```
