@@ -4,7 +4,7 @@ func _ready() -> void:
 	var properties := GALiteProperties.make_default("[GAME_KEY]", "[SECRET_KEY]")
 	properties.user_id = "test-user-0"  	# Generate unique user id or load from saves, 
 											# it's should be stored in local db
-	properties.session_id = "session-0" 	# Generate unique session id
+	#properties.session_id = "uuid4" 		# Generate unique session id
 	properties.session_num = 1				# it's should be stored in local db
 	properties.business_transaction_num = 1	# it's should be stored in local db
 	
