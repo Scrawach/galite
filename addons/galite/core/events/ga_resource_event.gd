@@ -17,7 +17,7 @@ func serialize(properties: GALiteProperties) -> Dictionary:
 
 static func sink(currency: String, item_type: String, item_id: String, amount: float) -> GAResourceEvent:
 	var event_id: String = "Sink:%s:%s:%s" % [currency, item_type, item_id]
-	return GAResourceEvent.new(event_id, amount)
+	return GAResourceEvent.new(event_id, -amount)
 
 static func source(currency: String, item_type: String, item_id: String, amount: float) -> GAResourceEvent:
 	var event_id: String = "Source:%s:%s:%s" % [currency, item_type, item_id]
