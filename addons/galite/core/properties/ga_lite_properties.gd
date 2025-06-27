@@ -1,4 +1,4 @@
-class_name GAProperties
+class_name GALiteProperties
 extends RefCounted
 
 # Sandbox Keys
@@ -9,14 +9,14 @@ var secret_key: String = "16813a12f718bc5c620f56944e1abc3ea13ccbac"
 # Required fields:
 var device: String = OS.get_model_name().to_lower()
 var v: int = 2
-var user_id: String = "unknown"
+var user_id: String = "unknown" # should be generated and stored in local db
 var client_ts: int = 0
 var sdk_version: String = "rest api v2"
 var os_version: String = OS.get_name().to_lower() + " " # whitespace required
 var manufacturer: String = OS.get_name().to_lower()
 var platform: String = OS.get_name().to_lower()
-var session_id: String = "de305d54-75b4-431b-adb2-eb6b9e546014"
-var session_num: int = 1
+var session_id: String = "de305d54-75b4-431b-adb2-eb6b9e546014" # should be generated
+var session_num: int = 1 # should be incremented and stored in local db
 
 # Not required fields:
 var limit_ad_tracking: bool
@@ -34,6 +34,9 @@ var ios_idfa: String
 
 # Required for Android
 var google_aid: String
+
+# Required for events
+var business_transaction_num: int = 1 # used for business event
 
 func serialize() -> Dictionary:
 	return {
@@ -53,11 +56,11 @@ func get_engine_version() -> String:
 	var version = Engine.get_version_info()
 	return "godot %s.%s.%s" % [version.major, version.minor, version.patch]
 
-static func make_sandbox() -> GAProperties:
-	return GAProperties.new()
+static func make_sandbox() -> GALiteProperties:
+	return GALiteProperties.new()
 
-static func make_default(game_key: String, secret_key: String) -> GAProperties:
-	var properties := GAProperties.new()
+static func make_default(game_key: String, secret_key: String) -> GALiteProperties:
+	var properties := GALiteProperties.new()
 	properties.base_url = "https://api.gameanalytics.com/v2/"
 	properties.game_key = game_key
 	properties.secret_key = secret_key

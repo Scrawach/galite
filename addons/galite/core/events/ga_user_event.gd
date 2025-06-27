@@ -3,7 +3,7 @@ extends GAEvent
 
 var elapsed_seconds
 
-func serialize() -> Dictionary:
+func serialize(properties: GALiteProperties) -> Dictionary:
 	if elapsed_seconds:
 		return {
 			"category": "session_end",

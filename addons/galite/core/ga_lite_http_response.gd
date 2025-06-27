@@ -1,4 +1,4 @@
-class_name GAHTTPResponse
+class_name GALiteHTTPResponse
 extends RefCounted
 
 var code: int

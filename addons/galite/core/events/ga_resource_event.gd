@@ -8,7 +8,7 @@ func _init(event_id: String, amount: float) -> void:
 	self.event_id = event_id
 	self.amount = amount
 
-func serialize() -> Dictionary:
+func serialize(properties: GALiteProperties) -> Dictionary:
 	return {
 		CATEGORY: "resource",
 		"event_id": event_id,

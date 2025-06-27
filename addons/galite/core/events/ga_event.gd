@@ -3,5 +3,5 @@ extends RefCounted
 
 const CATEGORY: String = "category"
 
-func serialize() -> Dictionary:
+func serialize(properties: GALiteProperties) -> Dictionary:
 	return { }

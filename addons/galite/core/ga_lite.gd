@@ -1,19 +1,20 @@
 extends Node
 
-var properties: GAProperties
+var logger := GALiteLogger.new("GALite")
+var properties: GALiteProperties
 
 var url_init: String
 var url_events: String
 
-func initialize(properties: GAProperties) -> void:
+func initialize(properties: GALiteProperties) -> void:
 	self.properties = properties
 	self.url_init = _make_url("init")
 	self.url_events = _make_url("events")
 
-func request_init_async() -> GAHTTPResponse:
+func request_init_async() -> GALiteHTTPResponse:
 	return await _request_async(url_init, _make_init_request())
 
-func request_async(event: GAEvent) -> GAHTTPResponse:
+func request_async(event: GAEvent) -> GALiteHTTPResponse:
 	properties.client_ts = int(Time.get_unix_time_from_system())
 	return await _request_async(url_events, _serialize_event(event))
 
@@ -25,20 +26,22 @@ func _make_init_request() -> String:
 	})
 
 func _serialize_event(event: GAEvent) -> String:
-	var serialized_event: Dictionary = event.serialize()
+	var serialized_event: Dictionary = event.serialize(properties)
 	serialized_event.merge(properties.serialize())
 	return JSON.stringify([serialized_event])
 
 func _make_url(endpoint: String) -> String:
 	return properties.base_url + properties.game_key + "/" + endpoint
 
-func _request_async(endpoint: String, content: String) -> GAHTTPResponse:
+func _request_async(endpoint: String, content: String) -> GALiteHTTPResponse:
 	var request = HTTPRequest.new()
 	add_child(request)
+	
 	var error: int = request.request(endpoint, _make_headers(content), HTTPClient.METHOD_POST, content)
 	var response = await request.request_completed
-	var ga_response := GAHTTPResponse.new(response[0], response[1], response[2], response[3].get_string_from_ascii())
-	_debug("Received: %s" % ga_response)
+	var ga_response := GALiteHTTPResponse.new(response[0], response[1], response[2], response[3].get_string_from_ascii())
+	
+	logger.debug("Received: %s" % ga_response)
 	request.queue_free()
 	return ga_response
 
@@ -51,6 +54,3 @@ func hmac_auth_hash(body: String, secret: String) -> String:
 	hmac.start(HashingContext.HASH_SHA256, secret.to_utf8_buffer())
 	hmac.update(body.to_utf8_buffer())
 	return Marshalls.raw_to_base64(hmac.finish())
-
-func _debug(content: String) -> void:
-	print(content)

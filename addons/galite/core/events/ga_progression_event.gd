@@ -22,7 +22,7 @@ func with_attempt_number(attempts: int) -> GAProgressionEvent:
 	self.attempt_number = attempts
 	return self
 
-func serialize() -> Dictionary:
+func serialize(properties: GALiteProperties) -> Dictionary:
 	var event := {
 		"category": "progression",
 		"event_id": "%s:%s" % [status, progression]
