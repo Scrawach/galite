@@ -39,7 +39,10 @@ func _ready() -> void:
 	await GALite.request_async(GAErrorEvent.error("test error message"))
 	await GALite.request_async(GAErrorEvent.critical("test critical message"))
 	
-	# session end with length in seconds
+	# ads events:
+	await GALite.request_async(GAAdEvent.new("sdk_name", "placement", GAAdEvent.Type.VIDEO, GAAdEvent.Action.CLICKED))
+	
+	# session end with length in secondsg
 	await GALite.request_async(GAUserEvent.session_end(5))
 	
 	# save user_id, session_num and business_transaction_num in local db
