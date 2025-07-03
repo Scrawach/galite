@@ -1,17 +1,12 @@
-> [!WARNING]
-> WORK IN PROGRESS
-
 # GALite
 
-Lightweight addon for working with GameAnalytics via REST API written in GDScript.
+Lightweight addon for working with GameAnalytics via REST API. 
 
-# Features
-
-# Usage
+GameAnalytics already has an [official SDK](https://github.com/GameAnalytics/GA-SDK-GODOT) for Godot, but it requires recompiling Godot engine. GALite does not require any compilation, it uses [Collection API](https://docs.gameanalytics.com/integrations/api/overview) and fullyt written in GDScript.
 
 ## Configuration
 
-Download plugin and enable it in ProjectSettings. It's create GALite autoload. Make sure that GALite exist in autoload list.
+Download plugin and enable it in `ProjectSettings`. It's create `GALite` autoload. Make sure that `GALite` exist in autoload list.
 
 ## Initialization
 
@@ -28,35 +23,59 @@ properties.business_transaction_num = 1 # it's should be stored in local db
 # Initialize autoload GALite with new properties:
 GALite.initialize(properties)
 ```
-
-If you want to check addon, you can use the [sandbox](https://docs.gameanalytics.com/integrations/api/setup#sandbox) properties.
+For development phase, you can use [sandbox](https://docs.gameanalytics.com/integrations/api/setup#sandbox) properties.
 
 ```gdscript
 var properties := GALiteProperties.make_sandbox()
 GALite.initialize(properties)
 ```
 
-## Request
+> [!WARNING]
+> Now you need generate `user_id`, `session_id`, `session_num` and `business_transaction_num` yourself, generate and save/load it from the local storage. To generate unique IDs, use the UUID libraries.
 
-After initialization you can send request. In first, request init packet:
+## Workflow
+
+Base workflow looks like:
+
+1. Initialize GALite.
+2. Send init request.
+3. Send user start session request at game start.
+4. Send event requests during game.
+5. Send user end session after game end.
+
+For init request exist specific method:
 
 ```gdscript
 await GALite.request_init_async()
 ```
 
-Create event and request is as single:
+For sending events just call `GALite.request_async()`. Request single event:
 
 ```gdscript
 var progression_event := GAProgressionEvent.start("World05")
 await GALite.request_async(progression_event)
 ```
 
-Or as group of events:
+Request group of events:
 
 ```gdscript
 var progression_event := GAProgressionEvent.start("World05")
 var design_event := GADesignEvent.new("GamePlay:kill:goblin")
 await GALite.request_group_async([progression_event, design_event])
+```
+
+### Full Example
+
+```gdscript
+var properties := GALiteProperties.make_sandbox()
+GALite.initialize(properties)
+
+await GALite.request_init_async()
+await GALite.request_async(GAUserEvent.session_start())
+
+await GALite.request_async(GAProgressionEvent.start("World05"))
+
+await GALite.request_async(GAUserEvent.session_end(5))
 ```
 
 Other [examples](https://github.com/Scrawach/galite/tree/master/addons/galite/examples)
@@ -66,7 +85,7 @@ Other [examples](https://github.com/Scrawach/galite/tree/master/addons/galite/ex
 
 ## Events
 
-Many events has builder method. It's a little bit more safety, so use it.
+Game Analytics has strict requirements for the text in requests. In this regard, many events have builder methods. It's a little bit more safety, so use it.
 
 ```gdscript
 # instead:
@@ -92,10 +111,10 @@ GAUserEvent.session_end(5)
 # Start World05 level event:
 GAProgressionEvent.start("World05")
 
-# Failed World05 level with score 42 (not required)
+# Failed World05 level with score 42
 GAProgressionEvent.fail("World05").with_score(42)
 
-# Completed World05 level with attempt numbers (not required)
+# Completed World05 level with attempt numbers
 GAProgressionEvent.complete("World05").with_attempt_number(3)
 ```
 
@@ -125,9 +144,11 @@ GAResourceEvent.source("gold", "mine", "mineBoost", 15)
 ### Design events
 
 ```gdscript
+# Base design event:
 GADesignEvent.new("GamePlay:kill:goblin")
-GADesignEvent.new("GamePlay:heal:goblin")
-GADesignEvent.new("GamePlay:kill:orc")
+
+# Setup value with event:
+GADesignEvent.new("GamePlay:kill:orc").with_value(10)
 ```
 
 ### Error events
@@ -139,6 +160,9 @@ GAErrorEvent.warning("test warning message")
 GAErrorEvent.error("test error message")
 GAErrorEvent.critical("test critical message")
 ```
+
+> [!WARNING]
+> Do not send more than 10 error events per game launch! [Details](https://docs.gameanalytics.com/integrations/api/event-types#error-events).
 
 ### Ads events
 
