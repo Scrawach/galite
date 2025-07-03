@@ -1,7 +1,7 @@
 class_name GAAdEvent
 extends GAEvent
 
-enum AdType {
+enum Type {
 	VIDEO = 0,
 	REWARDED_VIDEO = 1,
 	PLAYABLE = 2,
@@ -10,14 +10,14 @@ enum AdType {
 	BANNER = 5
 }
 
-enum AdAction {
+enum Action {
 	CLICKED = 0,
 	SHOW = 1,
 	FAILED_SHOW = 2,
 	REWARD_RECEIVED = 3
 }
 
-enum AdFailReason {
+enum FailReason {
 	UNKNOWN = 0,
 	OFFLINE = 1,
 	NO_FILL = 2,
@@ -28,14 +28,14 @@ enum AdFailReason {
 
 var ad_sdk_name: String
 var ad_placement: String
-var ad_type: AdType
-var ad_action: AdAction
+var ad_type: Type
+var ad_action: Action
 
 var ad_fail_show_reason
 var ad_duration
 var ad_first: bool
 
-func _init(sdk_name: String, placement: String, type: AdType, action: AdAction) -> void:
+func _init(sdk_name: String, placement: String, type: Type, action: Action) -> void:
 	self.ad_sdk_name = sdk_name
 	self.ad_placement = placement
 	self.ad_type = type
@@ -46,12 +46,12 @@ func serialize(properties: GALiteProperties) -> Dictionary:
 		CATEGORY: "ads",
 		"ad_sdk_name": ad_sdk_name,
 		"ad_placement": ad_placement,
-		"ad_type": get_string_from_enum(ad_type, AdType),
-		"ad_action": get_string_from_enum(ad_action, AdAction)
+		"ad_type": get_string_from_enum(ad_type, Type),
+		"ad_action": get_string_from_enum(ad_action, Action)
 	}
 	
 	if ad_fail_show_reason:
-		required_data["ad_fail_show_reason"] = get_string_from_enum(ad_fail_show_reason, AdFailReason)
+		required_data["ad_fail_show_reason"] = get_string_from_enum(ad_fail_show_reason, FailReason)
 	
 	if ad_duration:
 		required_data["ad_duration"] = ad_duration
@@ -61,7 +61,7 @@ func serialize(properties: GALiteProperties) -> Dictionary:
 	
 	return required_data
 
-func failed_by(reason: AdFailReason) -> GAAdEvent:
+func failed_by(reason: FailReason) -> GAAdEvent:
 	ad_fail_show_reason = reason
 	return self
 
