@@ -2,7 +2,7 @@
 
 Lightweight addon for working with GameAnalytics via REST API. 
 
-GameAnalytics already has an [official SDK](https://github.com/GameAnalytics/GA-SDK-GODOT) for Godot, but it requires recompiling Godot engine. GALite does not require any compilation, it uses [Collection API](https://docs.gameanalytics.com/integrations/api/overview) and fullyt written in GDScript.
+GameAnalytics already has an [official SDK](https://github.com/GameAnalytics/GA-SDK-GODOT) for Godot, but it requires recompiling Godot engine. GALite does not require any compilation, it uses [Collection API](https://docs.gameanalytics.com/integrations/api/overview) and fully written in GDScript.
 
 ## Configuration
 
