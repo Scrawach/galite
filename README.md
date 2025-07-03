@@ -36,10 +36,35 @@ var properties := GALiteProperties.make_sandbox()
 GALite.initialize(properties)
 ```
 
-## Events
+## Request
+
+After initialization you can send request. In first, request init packet:
+
+```gdscript
+await GALite.request_init_async()
+```
+
+Create event and request is as single:
+
+```gdscript
+var progression_event := GAProgressionEvent.start("World05")
+await GALite.request_async(progression_event)
+```
+
+Or as group of events:
+
+```gdscript
+var progression_event := GAProgressionEvent.start("World05")
+var design_event := GADesignEvent.new("GamePlay:kill:goblin")
+await GALite.request_group_async([progression_event, design_event])
+```
+
+Other [examples](https://github.com/Scrawach/galite/tree/master/addons/galite/examples)
 
 > [!WARNING]
 > Events are sent immediately! If you want to achieve deferred sending, implement proxy with events cache and use request group from GALite API when you need it.
+
+## Events
 
 ### User events
 
