@@ -51,11 +51,16 @@ func _request_async(endpoint: String, content: String) -> GALiteHTTPResponse:
 	var request = HTTPRequest.new()
 	add_child(request)
 	
+	if logger.can_log(GALiteLogger.LogLevel.DEBUG):
+		logger.debug("REQUEST \"%s\": %s" % [endpoint, content])
+	
 	var error: int = request.request(endpoint, _make_headers(content), HTTPClient.METHOD_POST, content)
 	var response = await request.request_completed
 	var ga_response := GALiteHTTPResponse.new(response[0], response[1], response[2], response[3].get_string_from_ascii())
 	
-	logger.debug("Received: %s" % ga_response)
+	if logger.can_log(GALiteLogger.LogLevel.DEBUG):
+		logger.debug("RECEIVED: %s" % ga_response)
+	
 	request.queue_free()
 	return ga_response
 
