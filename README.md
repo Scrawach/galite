@@ -66,60 +66,83 @@ Other [examples](https://github.com/Scrawach/galite/tree/master/addons/galite/ex
 
 ## Events
 
+Many events has builder method. It's a little bit more safety, so use it.
+
+```gdscript
+# instead:
+var bad_start := GAProgressionEvent.new("start", "world05")
+
+# use
+var good_start := GAProgressionEvent.start("World05")
+```
+
 ### User events
 
 ```gdscript
 # Start session:
-await GALite.request_async(GAUserEvent.session_start())
+GAUserEvent.session_start()
 
 # End session with 5 seconds duration
-await GALite.request_async(GAUserEvent.session_end(5))
+GAUserEvent.session_end(5)
+```
+
+### Progression events
+
+```gdscript
+# Start World05 level event:
+GAProgressionEvent.start("World05")
+
+# Failed World05 level with score 42 (not required)
+GAProgressionEvent.fail("World05").with_score(42)
+
+# Completed World05 level with attempt numbers (not required)
+GAProgressionEvent.complete("World05").with_attempt_number(3)
 ```
 
 ### Business events
 
 ```gdscript
 # Send default business event:
-await GALite.request_async(GABusinessEvent.new("BlueGemsPack:CustomGem0", 50, "USD"))
+GABusinessEvent.new("BlueGemsPack:CustomGem0", 50, "USD")
 
 # Setup not required field with place, where it's purchased:
-await GALite.request_async(GABusinessEvent.new("BlueGemsPack:CustomGem0", 10, "USD").purchased_from("event_example"))
+GABusinessEvent.new("BlueGemsPack:CustomGem0", 10, "USD").purchased_from("event_example")
 
 # Setup not required filed with shop receipt:
-await GALite.request_async(GABusinessEvent.new("BlueGemsPack:CustomGem1", 50, "USD").with_receipt("google", "[RECEIPT]", "[SIGNATURE]"))
+GABusinessEvent.new("BlueGemsPack:CustomGem1", 50, "USD").with_receipt("google", "[RECEIPT]", "[SIGNATURE]")
 ```
 
 ### Resource events
 
 ```gdscript
 # Sink item values represent what the virtual currency was spent on.
-await GALite.request_async(GAResourceEvent.sink("gold", "boost", "rainbowBoost", 10))
+GAResourceEvent.sink("gold", "boost", "rainbowBoost", 10)
 
 # Source item values represent in what way the virtual currency was earned.
-await GALite.request_async(GAResourceEvent.source("gold", "mine", "mineBoost", 15))
+GAResourceEvent.source("gold", "mine", "mineBoost", 15)
 ```
 
 ### Design events
 
 ```gdscript
-await GALite.request_async(GADesignEvent.new("GamePlay:kill:goblin"))
-await GALite.request_async(GADesignEvent.new("GamePlay:heal:goblin"))
-await GALite.request_async(GADesignEvent.new("GamePlay:kill:orc"))
+GADesignEvent.new("GamePlay:kill:goblin")
+GADesignEvent.new("GamePlay:heal:goblin")
+GADesignEvent.new("GamePlay:kill:orc")
 ```
 
 ### Error events
 
 ```gdscript
-await GALite.request_async(GAErrorEvent.debug("test debug message"))
-await GALite.request_async(GAErrorEvent.info("test info message"))
-await GALite.request_async(GAErrorEvent.warning("test warning message"))
-await GALite.request_async(GAErrorEvent.error("test error message"))
-await GALite.request_async(GAErrorEvent.critical("test critical message"))
+GAErrorEvent.debug("test debug message")
+GAErrorEvent.info("test info message")
+GAErrorEvent.warning("test warning message")
+GAErrorEvent.error("test error message")
+GAErrorEvent.critical("test critical message")
 ```
 
 ### Ads events
 
 ```gdscript
-await GALite.request_async(GAAdEvent.new("sdk_name", "placement", GAAdEvent.Type.VIDEO, GAAdEvent.Action.CLICKED))
-await GALite.request_async(GAAdEvent.new("sdk_name", "placement", GAAdEvent.Type.REWARDED_VIDEO, GAAdEvent.Action.SHOW))
+GAAdEvent.new("sdk_name", "placement", GAAdEvent.Type.VIDEO, GAAdEvent.Action.CLICKED)
+GAAdEvent.new("sdk_name", "placement", GAAdEvent.Type.REWARDED_VIDEO, GAAdEvent.Action.SHOW)
 ```
