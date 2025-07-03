@@ -21,10 +21,9 @@ func set_log_level(new_level: LogLevel) -> void:
 	self._level = new_level
 
 func can_log(level: LogLevel) -> bool:
-	return level < _level
+	return level <= _level
 
 func debug(message) -> void:
-	print("maka")
 	_log(LogLevel.DEBUG, message)
 
 func verbose(message) -> void:
