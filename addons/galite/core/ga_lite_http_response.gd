@@ -13,4 +13,4 @@ func _init(code: int, status_code: int, headers: PackedStringArray, body = null)
 	self.body = body
 
 func _to_string() -> String:
-	return "%s, %s, %s, %s" % [code, status_code, headers, body]
+	return "Operation Code: %s, Status: %s, Headers: %s, Body: %s" % [code, status_code, headers, body]
