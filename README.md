@@ -6,9 +6,14 @@ GameAnalytics already has an [official SDK](https://github.com/GameAnalytics/GA-
 
 ## Configuration
 
-Download plugin and enable it in `ProjectSettings`. It's create `GALite` autoload. Make sure that `GALite` exist in autoload list.
+* Copy addons folder from this repository into your project root folder.
+* Enable plugin `GAlite` under `ProjectSettings/Plugins`.
+* Make sure that `GALite` exist in autoload list under `ProjectSettins/Globals/Autoload`.
 
 ## Initialization
+
+> [!WARNING]
+> Now you need generate `user_id`, `session_id`, `session_num` and `business_transaction_num` yourself, generate and save/load it from the local storage. To generate unique IDs, use the UUID libraries.
 
 ```gdscript
 # Create GALiteProperties and setup these fields:
@@ -30,14 +35,11 @@ var properties := GALiteProperties.make_sandbox()
 GALite.initialize(properties)
 ```
 
-> [!WARNING]
-> Now you need generate `user_id`, `session_id`, `session_num` and `business_transaction_num` yourself, generate and save/load it from the local storage. To generate unique IDs, use the UUID libraries.
-
 ## Workflow
 
 Base workflow looks like:
 
-1. Initialize GALite.
+1. Initialize GALite autoload.
 2. Send init request.
 3. Send user start session request at game start.
 4. Send event requests during game.
@@ -88,7 +90,7 @@ Other [examples](https://github.com/Scrawach/galite/tree/master/addons/galite/ex
 Game Analytics has strict requirements for the text in requests. In this regard, many events have builder methods. It's a little bit more safety, so use it.
 
 ```gdscript
-# instead:
+# instead
 var bad_start := GAProgressionEvent.new("start", "world05")
 
 # use
