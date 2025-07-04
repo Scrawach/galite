@@ -13,7 +13,7 @@ GameAnalytics already has an [official SDK](https://github.com/GameAnalytics/GA-
 ## Initialization
 
 > [!WARNING]
-> Now you need generate `user_id`, `session_id`, `session_num` and `business_transaction_num` yourself, generate and save/load it from the local storage. To generate unique IDs, use the UUID libraries.
+> Now you need generate `user_id`, `session_id`, `session_num` and `business_transaction_num` yourself, generate and save/load it from the local storage. Game Analytics expects that `session_id` has uuid format, so for generate unique ids, use uuid libraries from asset lib.
 
 ```gdscript
 # Create GALiteProperties and setup these fields:
@@ -28,7 +28,15 @@ properties.business_transaction_num = 1 # it's should be stored in local db
 # Initialize autoload GALite with new properties:
 GALite.initialize(properties)
 ```
-For development phase, you can use [sandbox](https://docs.gameanalytics.com/integrations/api/setup#sandbox) properties.
+
+However, you can use a pre-generated template. This will allow you to quickly connect with Game Analytics and getting started, but it will make it impossible for you to differentiate users from each other in analytics dashboard.
+
+```gdscript
+var properties := GALiteProperties.make_default("[GAME_KEY]", "[GAME_SECRET]")
+GALite.initialize(properties)
+```
+
+For development phase, without project in Game Analytics, you can use [sandbox](https://docs.gameanalytics.com/integrations/api/setup#sandbox).
 
 ```gdscript
 var properties := GALiteProperties.make_sandbox()
