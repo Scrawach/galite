@@ -1,5 +1,8 @@
 extends Node
 
+signal initialized(properties: GALiteProperties)
+signal request_completed(response: GALiteHTTPResponse)
+
 var logger := GALiteLogger.new("GALite")
 var properties: GALiteProperties
 
@@ -10,6 +13,7 @@ func initialize(properties: GALiteProperties) -> void:
 	self.properties = properties
 	self.url_init = _make_url("init")
 	self.url_events = _make_url("events")
+	self.initialized.emit(properties)
 
 func request_init_async() -> GALiteHTTPResponse:
 	return await _request_async(url_init, _make_init_request())
@@ -61,6 +65,7 @@ func _request_async(endpoint: String, content: String) -> GALiteHTTPResponse:
 	if logger.can_log(GALiteLogger.LogLevel.DEBUG):
 		logger.debug("RECEIVED: %s" % ga_response)
 	
+	request_completed.emit(ga_response)
 	request.queue_free()
 	return ga_response
 
