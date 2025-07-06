@@ -1,3 +1,5 @@
+<img width="128px" src="docs/logo.png" alt="logo" />
+
 # GALite
 
 Lightweight addon for working with GameAnalytics via REST API. 
