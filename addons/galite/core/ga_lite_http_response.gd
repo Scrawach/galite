@@ -16,4 +16,9 @@ func _to_string() -> String:
 	return "Operation Code: %s, Status: %s, Headers: %s, Body: %s" % [code, status_code, headers, body]
 
 static func from_array(content: Array) -> GALiteHTTPResponse:
-	return GALiteHTTPResponse.new(content[0], content[1], content[2], content[3].get_string_from_ascii())
+	var body = content[3]
+	
+	if content[3] != null:
+		body = JSON.parse_string(content[3].get_string_from_ascii())
+	
+	return GALiteHTTPResponse.new(content[0], content[1], content[2], body)
