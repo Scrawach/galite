@@ -5,6 +5,7 @@ var event_id: String
 var amount: float
 
 func _init(event_id: String, amount: float) -> void:
+	super._init()
 	self.event_id = event_id
 	self.amount = amount
 

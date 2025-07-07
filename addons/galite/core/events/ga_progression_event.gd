@@ -11,6 +11,7 @@ var score
 var attempt_number
 
 func _init(status: String, progression: String) -> void:
+	super._init()
 	self.status = status
 	self.progression = progression
 

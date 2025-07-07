@@ -11,6 +11,7 @@ var severity: String
 var message: String
 
 func _init(severity: String, message: String) -> void:
+	super._init()
 	self.severity = severity
 	self.message = message
 

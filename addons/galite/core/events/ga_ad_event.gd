@@ -36,6 +36,7 @@ var ad_duration
 var ad_first: bool
 
 func _init(sdk_name: String, placement: String, type: Type, action: Action) -> void:
+	super._init()
 	self.ad_sdk_name = sdk_name
 	self.ad_placement = placement
 	self.ad_type = type

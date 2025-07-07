@@ -5,6 +5,7 @@ var event_id: String
 var value
 
 func _init(event_id: String) -> void:
+	super._init()
 	self.event_id = event_id
 
 func serialize(properties: GALiteProperties) -> Dictionary:

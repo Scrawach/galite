@@ -16,13 +16,14 @@ func _to_string() -> String:
 	return "Operation Code: %s, Status: %s, Headers: %s, Body: %s" % [code, status_code, headers, body]
 
 func is_ok() -> bool:
-	HTTPClient.ResponseCode
 	return code == 0 and status_code < 300
 
 static func from_array(content: Array) -> GALiteHTTPResponse:
 	var body = content[3]
 	
-	if content[3] != null:
+	if content[1] < 300:
 		body = JSON.parse_string(content[3].get_string_from_ascii())
+	else:
+		body = content[3].get_string_from_ascii()
 	
 	return GALiteHTTPResponse.new(content[0], content[1], content[2], body)

@@ -5,6 +5,7 @@ var ad_network_name: String
 var impression_data: Dictionary
 
 func _init(network_name: String, data: Dictionary) -> void:
+	super._init()
 	self.ad_network_name = network_name
 	self.impression_data = data
 

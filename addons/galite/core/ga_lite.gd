@@ -22,17 +22,15 @@ func request_init_async() -> GALiteHTTPResponse:
 	
 	var response := await _request_async(url_init, _make_init_request())
 	
-	if response.body and response.body.has(SERVER_TIMESTAMP):
+	if response.is_ok() and response.body and response.body.has(SERVER_TIMESTAMP):
 		timestamp_offset = get_current_time() - response.body[SERVER_TIMESTAMP]
 	
 	return response
 
 func request_async(event: GAEvent) -> GALiteHTTPResponse:
-	properties.client_ts = get_current_time() - timestamp_offset
 	return await _request_async(url_events, _serialize_event(event))
 
-func request_group_async(events: Array) -> GALiteHTTPResponse:
-	properties.client_ts = get_current_time() - timestamp_offset
+func request_group_async(events: Array[GAEvent]) -> GALiteHTTPResponse:
 	return await _request_async(url_events, _serialize_group_of_events(events))
 
 func _make_init_request() -> String:
@@ -43,19 +41,19 @@ func _make_init_request() -> String:
 	})
 
 func _serialize_event(event: GAEvent) -> String:
+	return JSON.stringify([_pack_event_with_properties(event)])
+
+func _serialize_group_of_events(events: Array[GAEvent]) -> String:
+	var group_request: Array
+	for event in events:
+		group_request.append(_pack_event_with_properties(event))
+	return JSON.stringify(group_request)
+
+func _pack_event_with_properties(event: GAEvent) -> Dictionary:
 	var serialized_event: Dictionary = event.serialize(properties)
 	serialized_event.merge(properties.serialize())
-	return JSON.stringify([serialized_event])
-
-func _serialize_group_of_events(events: Array) -> String:
-	var group_request: Array
-	var serialized_properties: Dictionary = properties.serialize()
-	for event in events:
-		var ga_event: GAEvent = event as GAEvent
-		var serialized_event: Dictionary = ga_event.serialize(properties)
-		serialized_event.merge(serialized_properties)
-		group_request.append(serialized_event)
-	return JSON.stringify(group_request)
+	serialized_event["client_ts"] = event.timestamp - timestamp_offset
+	return serialized_event
 
 func _make_url(endpoint: String) -> String:
 	return properties.base_url + properties.game_key + "/" + endpoint

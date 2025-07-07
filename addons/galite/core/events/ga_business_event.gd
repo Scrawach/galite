@@ -9,6 +9,7 @@ var cart_type
 var receipt_info
 
 func _init(event_id: String, amount: int, currency: String) -> void:
+	super._init()
 	self.event_id = event_id
 	self.amount = amount
 	self.currency = currency
