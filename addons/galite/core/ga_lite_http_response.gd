@@ -18,10 +18,15 @@ func _to_string() -> String:
 func is_ok() -> bool:
 	return code == 0 and status_code < 300
 
+func has_error() -> bool:
+	return code != 0
+
 static func from_array(content: Array) -> GALiteHTTPResponse:
 	var body = content[3]
 	
-	if content[1] < 300:
+	if content[0] != OK:
+		pass
+	elif content[1] < 300:
 		body = JSON.parse_string(content[3].get_string_from_ascii())
 	else:
 		body = content[3].get_string_from_ascii()
