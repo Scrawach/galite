@@ -9,6 +9,8 @@ var properties: GALiteProperties
 var url_init: String
 var url_events: String
 
+var timestamp_offset: int
+
 func initialize(properties: GALiteProperties) -> void:
 	self.properties = properties
 	self.url_init = _make_url("init")
@@ -16,14 +18,21 @@ func initialize(properties: GALiteProperties) -> void:
 	self.initialized.emit(properties)
 
 func request_init_async() -> GALiteHTTPResponse:
-	return await _request_async(url_init, _make_init_request())
+	const SERVER_TIMESTAMP: String = "server_ts"
+	
+	var response := await _request_async(url_init, _make_init_request())
+	
+	if response.body and response.body.has(SERVER_TIMESTAMP):
+		timestamp_offset = get_current_time() - response.body[SERVER_TIMESTAMP]
+	
+	return response
 
 func request_async(event: GAEvent) -> GALiteHTTPResponse:
-	properties.client_ts = int(Time.get_unix_time_from_system())
+	properties.client_ts = get_current_time() - timestamp_offset
 	return await _request_async(url_events, _serialize_event(event))
 
 func request_group_async(events: Array) -> GALiteHTTPResponse:
-	properties.client_ts = int(Time.get_unix_time_from_system())
+	properties.client_ts = get_current_time() - timestamp_offset
 	return await _request_async(url_events, _serialize_group_of_events(events))
 
 func _make_init_request() -> String:
@@ -78,3 +87,6 @@ func hmac_auth_hash(body: String, secret: String) -> String:
 	hmac.start(HashingContext.HASH_SHA256, secret.to_utf8_buffer())
 	hmac.update(body.to_utf8_buffer())
 	return Marshalls.raw_to_base64(hmac.finish())
+
+func get_current_time() -> int:
+	return Time.get_unix_time_from_system()
