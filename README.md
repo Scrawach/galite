@@ -93,7 +93,7 @@ await GALite.request_async(GAUserEvent.session_end(5))
 Other [examples](https://github.com/Scrawach/galite/tree/master/addons/galite/examples)
 
 > [!WARNING]
-> Events are sent immediately! If you want to achieve deferred sending, implement proxy with events cache and use request group from GALite API when you need it.
+> Events are sent immediately! If you want to achieve deferred sending, implement proxy with events cache and use request group from GALite API when you need it. [Example](/addons/galite/examples/queued_events_example.gd).
 
 ## Events
 
