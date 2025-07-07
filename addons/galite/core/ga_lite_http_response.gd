@@ -15,6 +15,10 @@ func _init(code: int, status_code: int, headers: PackedStringArray, body = null)
 func _to_string() -> String:
 	return "Operation Code: %s, Status: %s, Headers: %s, Body: %s" % [code, status_code, headers, body]
 
+func is_ok() -> bool:
+	HTTPClient.ResponseCode
+	return code == 0 and status_code < 300
+
 static func from_array(content: Array) -> GALiteHTTPResponse:
 	var body = content[3]
 	
