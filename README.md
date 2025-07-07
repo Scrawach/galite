@@ -25,7 +25,7 @@ properties.secret_key = "16813a12f718bc5c620f56944e1abc3ea13ccbac"
 properties.user_id = "test_user_0" # it's should be generated and stored in local db
 properties.session_id = "de305d54-75b4-431b-adb2-eb6b9e546014" # it's should be generated
 properties.session_num = 1 # it's should be stored in local db
-properties.business_transaction_num = 1 # it's should be stored in local db
+properties.business_transaction_num = 1 # it's should be stored in local db, it's auto increment after serialize any BusinessEvent
 
 # Initialize autoload GALite with new properties:
 GALite.initialize(properties)
