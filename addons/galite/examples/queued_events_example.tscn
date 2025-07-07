@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dvdt12luqsovq"]
+
+[ext_resource type="Script" path="res://addons/galite/examples/queued_events_example.gd" id="1_sge88"]
+
+[node name="Queued Events Example" type="Node"]
+script = ExtResource("1_sge88")
